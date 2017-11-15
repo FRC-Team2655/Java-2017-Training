@@ -5,6 +5,7 @@ import org.usfirst.frc.team2655.robot.subsystems.DriveBaseSubsystem;
 import com.ctre.CANTalon;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
 
 
@@ -29,7 +30,10 @@ public class Robot extends IterativeRobot {
 		robotDrive = new RobotDrive(frontLeft, rearLeft, rearRight, frontRight);
 	}
 	
-	
+	public double getJoystickValue(Joystick joystick) {
+	    if(Math.abs(joystick.getRawAxis(0)) < 0.1) return 0;
+	    else return joystick.getRawAxis(0);
+	}
 	
 	
 	
@@ -44,6 +48,7 @@ public class Robot extends IterativeRobot {
 		}else {
 			driveBase.disableBrake();
 			driveBase.drive(power, rotation);
+			
 		}
 		
 	}
