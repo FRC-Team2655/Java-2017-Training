@@ -30,17 +30,17 @@ public class Robot extends IterativeRobot {
 		robotDrive = new RobotDrive(frontLeft, rearLeft, rearRight, frontRight);
 	}
 	
-	public double getJoystickValue(Joystick joystick) {
-	    if(Math.abs(joystick.getRawAxis(0)) < 0.1) return 0;
-	    else return joystick.getRawAxis(0);
+	public double getJoystickValue(int axis) {
+	    if(Math.abs(OI.js0.getRawAxis(axis)) < 0.1) return 0;
+	    else return OI.js0.getRawAxis(axis);
 	}
 	
 	
 	
 	@Override
 	public void teleopPeriodic() {
-		double power = OI.js0.getRawAxis(1) * -1;
-		double rotation = OI.js0.getRawAxis(2);
+		double power = getJoystickValue(1) * -1;
+		double rotation = getJoystickValue(3);
 		driveBase.drive(power, rotation);
 	}
 	
