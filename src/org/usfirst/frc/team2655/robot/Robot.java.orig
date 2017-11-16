@@ -41,7 +41,20 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {
 		double power = OI.js0.getRawAxis(1) * -1;
 		double rotation = OI.js0.getRawAxis(2);
+<<<<<<< HEAD
+		
+		if (OI.js0.getRawButton(1)) {
+			driveBase.enableBrake();
+			robotDrive.stopMotor();
+		}else {
+			driveBase.disableBrake();
+			driveBase.drive(power, rotation);
+			
+		}
+		
+=======
 		driveBase.drive(power, rotation);
+>>>>>>> 94870fcb52617e5cc10a6a2d2ede5f03dcf6d7a6
 	}
 	
 }
