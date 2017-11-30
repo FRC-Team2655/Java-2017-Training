@@ -4,22 +4,28 @@ import org.usfirst.frc.team2655.robot.subsystems.DriveBaseSubsystem;
 
 import com.ctre.CANTalon;
 
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
 
 
 public class Robot extends IterativeRobot {
 	
+	// Our motor controllers. These will be initialized (created) in robotInit
 	public static CANTalon frontLeft;
 	public static CANTalon rearLeft;
 	public static CANTalon rearRight;
 	public static CANTalon frontRight;
 
+	// The RobotDrive class handles all the motors
 	public static RobotDrive robotDrive;
 	
+	// Our robot's drive base
 	public static DriveBaseSubsystem driveBase = new DriveBaseSubsystem();
 
+	/**
+	 * Setup the motor controllers and the drive object
+	 */
 	@Override
 	public void robotInit() {
 		frontLeft = new CANTalon(1);
@@ -30,17 +36,24 @@ public class Robot extends IterativeRobot {
 		robotDrive = new RobotDrive(frontLeft, rearLeft, rearRight, frontRight);
 	}
 	
-	public double getJoystickValue(int axis) {
-	    if(Math.abs(OI.js0.getRawAxis(axis)) < 0.1) return 0;
+	/**
+	 * Get a value for an axis with a dead zone (deadband)
+	 * @param axis The axis to get the value for
+	 * @param deadband The dead zone
+	 * @return The value if it is outside the deadband otherwise zero.
+	 */
+	public double getJoystickValue(int axis, double deadband) {
+	    if(Math.abs(OI.js0.getRawAxis(axis)) < deadband) return 0;
 	    else return OI.js0.getRawAxis(axis);
 	}
 	
-	
-	
+	/**
+	 * Called every 20ms during the driver controlled period
+	 */
 	@Override
 	public void teleopPeriodic() {
-		double power = getJoystickValue(1) * -1;
-		double rotation = getJoystickValue(3);
+		double power = getJoystickValue(1, 0.1) * -1;
+		double rotation = getJoystickValue(3, 0.1);
 		driveBase.drive(power, rotation);
 	}
 	
