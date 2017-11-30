@@ -4,9 +4,9 @@ import org.usfirst.frc.team2655.robot.subsystems.DriveBaseSubsystem;
 
 import com.ctre.CANTalon;
 
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.RobotDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 public class Robot extends IterativeRobot {
@@ -34,6 +34,8 @@ public class Robot extends IterativeRobot {
 		frontRight = new CANTalon(4);
 		
 		robotDrive = new RobotDrive(frontLeft, rearLeft, rearRight, frontRight);
+		
+		SmartDashboard.putString("DEBUG", "");
 	}
 	
 	/**
@@ -55,6 +57,15 @@ public class Robot extends IterativeRobot {
 		double power = getJoystickValue(1, 0.1) * -1;
 		double rotation = getJoystickValue(3, 0.1);
 		driveBase.drive(power, rotation);
+		
+		if (OI.js0.getRawButton(2)) {
+			SmartDashboard.putString("DEBUG", "GO");
+			driveBase.driveDistance(.5, 24);
+			SmartDashboard.putString("DEBUG", "STOP");
+		}else {
+			SmartDashboard.putString("DEBUG", "STOP");
+		}
+		
 	}
 	
 }

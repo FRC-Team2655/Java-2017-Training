@@ -25,7 +25,10 @@ public class DriveBaseSubsystem extends Subsystem {
      * @param distance The distance to drive until
      */
     public void driveDistance(double speed, double distance) {
-    	double target = -1; // Distance in ticks
+    	if (distance < 0) {
+    		speed *= -1;
+    	}
+    	double target = getAvgTicks() + (distance / 18.7 * 360); // Distance in ticks
     	double ticks = getAvgTicks();
     	while(ticks < target) {
     		drive(speed, 0);
@@ -38,9 +41,14 @@ public class DriveBaseSubsystem extends Subsystem {
      * Average the values of all four encoders
      * @return The average number of ticks
      */
-    private double getAvgTicks() {
-    	// Get avg ticks and return ticks
-    	return 0; // This will need to change
+    private int getAvgTicks() {
+    	int fl = Robot.frontLeft.getEncPosition(); 
+    	int fr = Robot.frontRight.getEncPosition(); 
+    	int rl = Robot.rearLeft.getEncPosition();
+    	int rr = Robot.rearRight.getEncPosition(); 
+    	int avg = (fl + fr + rl + rr) / 1; // Only 1 functional encoder. HELP US!!!!
+    	return avg;
+    	
     }
 }
 
