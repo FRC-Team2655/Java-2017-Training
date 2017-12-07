@@ -1,8 +1,10 @@
 package org.usfirst.frc.team2655.robot;
 
 import org.usfirst.frc.team2655.robot.subsystems.DriveBaseSubsystem;
+import org.usfirst.frc.team2655.robot.values.Values;
 
 import com.ctre.CANTalon;
+import com.ctre.CANTalon.FeedbackDevice;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.RobotDrive;
@@ -22,7 +24,7 @@ public class Robot extends IterativeRobot {
 	
 	// Our robot's drive base
 	public static DriveBaseSubsystem driveBase = new DriveBaseSubsystem();
-
+	//8=====================D	
 	/**
 	 * Setup the motor controllers and the drive object
 	 */
@@ -35,7 +37,31 @@ public class Robot extends IterativeRobot {
 		
 		robotDrive = new RobotDrive(frontLeft, rearLeft, rearRight, frontRight);
 		
-		SmartDashboard.putString("DEBUG", "");
+		frontRight.reverseSensor(true);
+		rearRight.reverseSensor(true);
+		
+		frontLeft.setEncPosition(0);
+		rearLeft.setEncPosition(0);
+		rearRight.setEncPosition(0);
+		frontRight.setEncPosition(0);
+		
+		SmartDashboard.putNumber(Values.FRENC_KEY, 0);
+		SmartDashboard.putNumber(Values.FLENC_KEY, 0);
+		SmartDashboard.putNumber(Values.RLENC_KEY, 0);
+		SmartDashboard.putNumber(Values.RRENC_KEY, 0);
+		SmartDashboard.putString("DEBUG", "STOP");
+		SmartDashboard.putBoolean(Values.RESET_ENC, false);
+		
+		frontLeft.setFeedbackDevice(FeedbackDevice.QuadEncoder);
+		rearLeft.setFeedbackDevice(FeedbackDevice.QuadEncoder);
+		rearRight.setFeedbackDevice(FeedbackDevice.QuadEncoder);
+		frontRight.setFeedbackDevice(FeedbackDevice.QuadEncoder);
+		
+		frontLeft.configEncoderCodesPerRev(360);
+		rearLeft.configEncoderCodesPerRev(360);
+		rearRight.configEncoderCodesPerRev(360);
+		frontRight.configEncoderCodesPerRev(360);		
+		
 	}
 	
 	/**
@@ -54,6 +80,11 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
+		SmartDashboard.putNumber(Values.FLENC_KEY, frontLeft.getEncPosition());
+		SmartDashboard.putNumber(Values.FRENC_KEY, frontRight.getEncPosition());
+		SmartDashboard.putNumber(Values.RLENC_KEY, rearLeft.getEncPosition());
+		SmartDashboard.putNumber(Values.RRENC_KEY, rearRight.getEncPosition());
+		
 		double power = getJoystickValue(1, 0.1) * -1;
 		double rotation = getJoystickValue(3, 0.1);
 		driveBase.drive(power, rotation);
@@ -61,11 +92,7 @@ public class Robot extends IterativeRobot {
 		if (OI.js0.getRawButton(2)) {
 			SmartDashboard.putString("DEBUG", "GO");
 			driveBase.driveDistance(.5, 24);
-			SmartDashboard.putString("DEBUG", "STOP");
-		}else {
-			SmartDashboard.putString("DEBUG", "STOP");
 		}
-		
 	}
 	
 }

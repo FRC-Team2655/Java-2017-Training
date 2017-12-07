@@ -7,13 +7,12 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class DriveBaseSubsystem extends Subsystem {
 
-
     public void initDefaultCommand() {}
     
     /**
      * Drive the robot
      * @param power Speed to drive
-     * @param rotation Power to rotate with
+     * @param rotation Power to rotate withx	
      */
     public void drive(double power, double rotation) {    	
     	Robot.robotDrive.arcadeDrive(power, rotation, false);
@@ -21,14 +20,14 @@ public class DriveBaseSubsystem extends Subsystem {
     
     /**
      * Drive until a distance at a certain speed in a straight line
-     * @param speed The speed to drive at
-     * @param distance The distance to drive until
+     * @param speed The speed to drive at (-1 to 1)
+     * @param distance The distance to drive until (inches)
      */
     public void driveDistance(double speed, double distance) {
     	if (distance < 0) {
     		speed *= -1;
     	}
-    	double target = getAvgTicks() + (distance / 18.7 * 360); // Distance in ticks
+    	double target = getAvgTicks() + (distance / 18.7 * 1440); // Distance in ticks
     	double ticks = getAvgTicks();
     	while(ticks < target) {
     		drive(speed, 0);
@@ -44,9 +43,9 @@ public class DriveBaseSubsystem extends Subsystem {
     private int getAvgTicks() {
     	int fl = Robot.frontLeft.getEncPosition(); 
     	int fr = Robot.frontRight.getEncPosition(); 
-    	int rl = Robot.rearLeft.getEncPosition();
+    	//int rl = Robot.rearLeft.getEncPosition();
     	int rr = Robot.rearRight.getEncPosition(); 
-    	int avg = (fl + fr + rl + rr) / 1; // Only 1 functional encoder. HELP US!!!!
+    	int avg = (fl + fr + rr) / 3;
     	return avg;
     	
     }
