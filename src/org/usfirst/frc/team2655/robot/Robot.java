@@ -24,7 +24,6 @@ public class Robot extends IterativeRobot {
 	
 	// Our robot's drive base
 	public static DriveBaseSubsystem driveBase = new DriveBaseSubsystem();
-	//8=====================D	
 	/**
 	 * Setup the motor controllers and the drive object
 	 */
@@ -37,9 +36,6 @@ public class Robot extends IterativeRobot {
 		
 		robotDrive = new RobotDrive(frontLeft, rearLeft, rearRight, frontRight);
 		
-		frontRight.reverseSensor(true);
-		rearRight.reverseSensor(true);
-		
 		frontLeft.setEncPosition(0);
 		rearLeft.setEncPosition(0);
 		rearRight.setEncPosition(0);
@@ -49,8 +45,8 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber(Values.FLENC_KEY, 0);
 		SmartDashboard.putNumber(Values.RLENC_KEY, 0);
 		SmartDashboard.putNumber(Values.RRENC_KEY, 0);
-		SmartDashboard.putString("DEBUG", "STOP");
 		SmartDashboard.putBoolean(Values.RESET_ENC, false);
+		SmartDashboard.putString("DEBUG", "");
 		
 		frontLeft.setFeedbackDevice(FeedbackDevice.QuadEncoder);
 		rearLeft.setFeedbackDevice(FeedbackDevice.QuadEncoder);
@@ -60,7 +56,10 @@ public class Robot extends IterativeRobot {
 		frontLeft.configEncoderCodesPerRev(360);
 		rearLeft.configEncoderCodesPerRev(360);
 		rearRight.configEncoderCodesPerRev(360);
-		frontRight.configEncoderCodesPerRev(360);		
+		frontRight.configEncoderCodesPerRev(360);
+		
+		rearLeft.reverseSensor(true);
+		frontLeft.reverseSensor(true);
 		
 	}
 	
@@ -90,8 +89,15 @@ public class Robot extends IterativeRobot {
 		driveBase.drive(power, rotation);
 		
 		if (OI.js0.getRawButton(2)) {
-			SmartDashboard.putString("DEBUG", "GO");
 			driveBase.driveDistance(.5, 24);
+		}
+		boolean b1 = OI.js0.getRawButton(1);
+		SmartDashboard.putBoolean(Values.RESET_ENC, b1);
+		if (b1) {
+			frontLeft.setEncPosition(0);
+			rearLeft.setEncPosition(0);
+			rearRight.setEncPosition(0);
+			frontRight.setEncPosition(0);
 		}
 	}
 	
