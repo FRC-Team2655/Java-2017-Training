@@ -5,16 +5,20 @@ import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
 
-public class Autonomous {
+public class Autonomous { 
 	
-	static ArrayList<String> commands = new ArrayList<>();
-	static ArrayList<Double> args = new ArrayList<>();		
+	public Autonomous() {
+		System.out.println("Auto");
+	}
+	String scriptPath = "C:\\Users\\Platypi\\Desktop\\AutoScripts";
+	private ArrayList<String> commands = new ArrayList<>();
+ 	private ArrayList<Double> args = new ArrayList<>();		
 	
 	//Gets the autonomous scripts for the drive and rotate functions
-	public static boolean loadScript(String path) {
+	public boolean loadScript(String ScriptName) {
 		
 		try {
-			BufferedReader reader = new BufferedReader( new FileReader( new File(path) ) );
+			BufferedReader reader = new BufferedReader( new FileReader( new File(scriptPath + "\\" + ScriptName) ) );
 			String currentLine = "";
 			
 			while((currentLine = reader.readLine()) != null) {
@@ -35,17 +39,17 @@ public class Autonomous {
 		
 	}
 	
-	public static void runScript() {
+	public void runScript() {
 		
 		for(int i = 0; i < args.size(); i++) {
 			
-			switch(commands.get(i)) {
+			switch(commands.get(i).toUpperCase()) {
 			case "DRIVE":
-				drive();
+				drive(args.get(i), null);
 				break;
 			
 			case "ROTATE":
-				rotate();
+				rotate(args.get(i), null);
 				break;
 			}
 			
@@ -54,12 +58,13 @@ public class Autonomous {
 	}
 	
 	//This will eventually drive the robit
-	private static void drive() {
+	private void drive(Double arg1, Double arg2) {
+		System.out.println("Drive" + " " + arg1 + " " + arg2);
 		
 	}
 	//This will eventually rotate the robit
-	private static void rotate() {
-		
+	private void rotate(Double arg1, Double arg2) {
+		System.out.println("Rotate" + " " + arg1 + " " + arg2);
 	}
 
 }
