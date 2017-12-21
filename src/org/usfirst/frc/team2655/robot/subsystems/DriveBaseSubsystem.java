@@ -1,13 +1,25 @@
 package org.usfirst.frc.team2655.robot.subsystems;
 
 import org.usfirst.frc.team2655.robot.Robot;
+import org.usfirst.frc.team2655.robot.values.Values;
 
-import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.command.PIDSubsystem;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
-public class DriveBaseSubsystem extends Subsystem {
-
+public class DriveBaseSubsystem extends PIDSubsystem {
+	
+	/**
+	 * Initialize LiveWindow PIDs
+	 */
+	public DriveBaseSubsystem() {
+		super("drive", 1, 0, 0, 0);
+		this.setAbsoluteTolerance(140);
+		getPIDController().setContinuous(false);
+		LiveWindow.addActuator("drive", "drive_pid", getPIDController());
+	}
+	
     public void initDefaultCommand() {}
     
     /**
@@ -33,6 +45,7 @@ public class DriveBaseSubsystem extends Subsystem {
     	double target = getAvgTicks() + (distance / 18.7 * 1440); // Distance in ticks
     	SmartDashboard.putString("DEBUG", speed + "," + target);
     	double ticks = getAvgTicks();
+    	    	
     	while(Math.abs(ticks) < Math.abs(target)) {
     		drive(speed, 0);
     		ticks = getAvgTicks();
@@ -53,5 +66,17 @@ public class DriveBaseSubsystem extends Subsystem {
     	return avg;
     	
     }
+    
+    protected double returnPIDInput() {
+    	double val = getAvgTicks();
+		SmartDashboard.putNumber(Values.ENC_GRAPH_KEY, val);
+    	return val;
+    }
+
+    protected void usePIDOutput(double output) {
+    	drive(output, 0);
+    }
+    
 }
+
 

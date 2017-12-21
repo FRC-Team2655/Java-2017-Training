@@ -18,12 +18,12 @@ public class Robot extends IterativeRobot {
 	public static CANTalon rearLeft;
 	public static CANTalon rearRight;
 	public static CANTalon frontRight;
-
+	public static CANTalon[] motors;
 	// The RobotDrive class handles all the motors
 	public static RobotDrive robotDrive;
 	
 	// Our robot's drive base
-	public static DriveBaseSubsystem driveBase = new DriveBaseSubsystem();
+	public static DriveBaseSubsystem driveBase;
 	/**
 	 * Setup the motor controllers and the drive object
 	 */
@@ -33,13 +33,15 @@ public class Robot extends IterativeRobot {
 		rearLeft = new CANTalon(2);
 		rearRight = new CANTalon(3);
 		frontRight = new CANTalon(4);
-		
+		motors = new CANTalon[] {frontLeft, rearLeft, rearRight, frontRight};
+		driveBase = new DriveBaseSubsystem();
 		robotDrive = new RobotDrive(frontLeft, rearLeft, rearRight, frontRight);
 		
-		frontLeft.setEncPosition(0);
-		rearLeft.setEncPosition(0);
-		rearRight.setEncPosition(0);
-		frontRight.setEncPosition(0);
+		for(CANTalon m : motors) {
+			m.setEncPosition(0);
+			m.setFeedbackDevice(FeedbackDevice.QuadEncoder);
+			m.configEncoderCodesPerRev(360);
+		}
 		
 		SmartDashboard.putNumber(Values.FRENC_KEY, 0);
 		SmartDashboard.putNumber(Values.FLENC_KEY, 0);
@@ -47,20 +49,8 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber(Values.RRENC_KEY, 0);
 		SmartDashboard.putBoolean(Values.RESET_ENC, false);
 		SmartDashboard.putString("DEBUG", "");
-		
-		frontLeft.setFeedbackDevice(FeedbackDevice.QuadEncoder);
-		rearLeft.setFeedbackDevice(FeedbackDevice.QuadEncoder);
-		rearRight.setFeedbackDevice(FeedbackDevice.QuadEncoder);
-		frontRight.setFeedbackDevice(FeedbackDevice.QuadEncoder);
-		
-		frontLeft.configEncoderCodesPerRev(360);
-		rearLeft.configEncoderCodesPerRev(360);
-		rearRight.configEncoderCodesPerRev(360);
-		frontRight.configEncoderCodesPerRev(360);
-		
-		rearLeft.reverseSensor(true);
-		frontLeft.reverseSensor(true);
-		
+		SmartDashboard.putNumber(Values.ENC_GRAPH_KEY, 0);
+		SmartDashboard.putNumber(Values.ENC_SETPOINT_KEY, 0);
 	}
 	
 	/**
@@ -100,5 +90,19 @@ public class Robot extends IterativeRobot {
 			frontRight.setEncPosition(0);
 		}
 	}
+
+	@Override
+	public void testPeriodic() {
+		boolean b1 = OI.js0.getRawButton(1);
+		SmartDashboard.putBoolean(Values.RESET_ENC, b1);
+		if (b1) {
+			frontLeft.setEncPosition(0);
+			rearLeft.setEncPosition(0);
+			rearRight.setEncPosition(0);
+			frontRight.setEncPosition(0);
+		}
+	}
+	
+	
 	
 }
