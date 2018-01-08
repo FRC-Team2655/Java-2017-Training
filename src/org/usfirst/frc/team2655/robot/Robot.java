@@ -3,24 +3,28 @@ package org.usfirst.frc.team2655.robot;
 import org.usfirst.frc.team2655.robot.subsystems.DriveBaseSubsystem;
 import org.usfirst.frc.team2655.robot.values.Values;
 
-import com.ctre.CANTalon;
-import com.ctre.CANTalon.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.RobotDrive;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 public class Robot extends IterativeRobot {
 	
+	// Constants used in program
+	public static int talonClosedLoop = 0; // Normal closed loop
+	public static int talonTimeout = 0; // Do not timeout or wait for error codes
+	
 	// Our motor controllers. These will be initialized (created) in robotInit
-	public static CANTalon frontLeft;
-	public static CANTalon rearLeft;
-	public static CANTalon rearRight;
-	public static CANTalon frontRight;
-	public static CANTalon[] motors;
+	public static WPI_TalonSRX frontLeft;
+	public static WPI_TalonSRX rearLeft;
+	public static WPI_TalonSRX rearRight;
+	public static WPI_TalonSRX frontRight;
+	public static WPI_TalonSRX[] motors;
 	// The RobotDrive class handles all the motors
-	public static RobotDrive robotDrive;
+	public static DifferentialDrive robotDrive;
 	
 	// Our robot's drive base
 	public static DriveBaseSubsystem driveBase;
@@ -29,20 +33,26 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void robotInit() {
-		frontLeft = new CANTalon(1);
-		rearLeft = new CANTalon(2);
-		rearRight = new CANTalon(3);
-		frontRight = new CANTalon(4);
-		motors = new CANTalon[] {frontLeft, rearLeft, rearRight, frontRight};
-		driveBase = new DriveBaseSubsystem();
-		robotDrive = new RobotDrive(frontLeft, rearLeft, rearRight, frontRight);
+		frontLeft = new WPI_TalonSRX(1);
+		rearLeft = new WPI_TalonSRX(2);
+		rearRight = new WPI_TalonSRX(3);
+		frontRight = new WPI_TalonSRX(4);
 		
-		for(CANTalon m : motors) {
-			m.setEncPosition(0);
-			m.setFeedbackDevice(FeedbackDevice.QuadEncoder);
-			m.configEncoderCodesPerRev(360);
+		// Setup the rear motors to follow (copy) the front motors
+		rearLeft.follow(frontLeft);
+		rearRight.follow(frontRight);
+		
+		motors = new WPI_TalonSRX[] {frontLeft, frontRight, rearRight, rearLeft};
+		driveBase = new DriveBaseSubsystem();
+		robotDrive = new DifferentialDrive(frontLeft, frontRight);
+		
+		// Setup the motor controllers
+		for(WPI_TalonSRX m : motors) {
+			m.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, talonClosedLoop, talonTimeout);
+			m.setSelectedSensorPosition(0, talonClosedLoop, talonTimeout);
 		}
 		
+		// Add stuff to the dashboard
 		SmartDashboard.putNumber(Values.FRENC_KEY, 0);
 		SmartDashboard.putNumber(Values.FLENC_KEY, 0);
 		SmartDashboard.putNumber(Values.RLENC_KEY, 0);
@@ -69,10 +79,10 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
-		SmartDashboard.putNumber(Values.FLENC_KEY, frontLeft.getEncPosition());
-		SmartDashboard.putNumber(Values.FRENC_KEY, frontRight.getEncPosition());
-		SmartDashboard.putNumber(Values.RLENC_KEY, rearLeft.getEncPosition());
-		SmartDashboard.putNumber(Values.RRENC_KEY, rearRight.getEncPosition());
+		SmartDashboard.putNumber(Values.FLENC_KEY, frontLeft.getSelectedSensorPosition(talonClosedLoop));
+		SmartDashboard.putNumber(Values.FRENC_KEY, frontRight.getSelectedSensorPosition(talonClosedLoop));
+		SmartDashboard.putNumber(Values.RLENC_KEY, rearLeft.getSelectedSensorPosition(talonClosedLoop));
+		SmartDashboard.putNumber(Values.RRENC_KEY, rearRight.getSelectedSensorPosition(talonClosedLoop));
 		
 		double power = getJoystickValue(1, 0.1) * -1;
 		double rotation = getJoystickValue(3, 0.1);
@@ -84,10 +94,10 @@ public class Robot extends IterativeRobot {
 		boolean b1 = OI.js0.getRawButton(1);
 		SmartDashboard.putBoolean(Values.RESET_ENC, b1);
 		if (b1) {
-			frontLeft.setEncPosition(0);
-			rearLeft.setEncPosition(0);
-			rearRight.setEncPosition(0);
-			frontRight.setEncPosition(0);
+			frontLeft.setSelectedSensorPosition(0, talonClosedLoop, talonTimeout);
+			rearLeft.setSelectedSensorPosition(0, talonClosedLoop, talonTimeout);
+			rearRight.setSelectedSensorPosition(0, talonClosedLoop, talonTimeout);
+			frontRight.setSelectedSensorPosition(0, talonClosedLoop, talonTimeout);
 		}
 	}
 
@@ -96,10 +106,10 @@ public class Robot extends IterativeRobot {
 		boolean b1 = OI.js0.getRawButton(1);
 		SmartDashboard.putBoolean(Values.RESET_ENC, b1);
 		if (b1) {
-			frontLeft.setEncPosition(0);
-			rearLeft.setEncPosition(0);
-			rearRight.setEncPosition(0);
-			frontRight.setEncPosition(0);
+			frontLeft.setSelectedSensorPosition(0, talonClosedLoop, talonTimeout);
+			rearLeft.setSelectedSensorPosition(0, talonClosedLoop, talonTimeout);
+			rearRight.setSelectedSensorPosition(0, talonClosedLoop, talonTimeout);
+			frontRight.setSelectedSensorPosition(0, talonClosedLoop, talonTimeout);
 		}
 	}
 	

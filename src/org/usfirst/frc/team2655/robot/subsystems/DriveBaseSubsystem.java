@@ -17,7 +17,7 @@ public class DriveBaseSubsystem extends PIDSubsystem {
 		super("drive", 1, 0, 0, 0);
 		this.setAbsoluteTolerance(140);
 		getPIDController().setContinuous(false);
-		LiveWindow.addActuator("drive", "drive_pid", getPIDController());
+		LiveWindow.add(this.getPIDController());
 	}
 	
     public void initDefaultCommand() {}
@@ -58,10 +58,10 @@ public class DriveBaseSubsystem extends PIDSubsystem {
      * @return The average number of ticks
      */
     private int getAvgTicks() {
-    	int fl = Robot.frontLeft.getEncPosition() * -1; 
-    	int fr = Robot.frontRight.getEncPosition(); 
-    	//int rl = Robot.rearLeft.getEncPosition() * -1;
-    	int rr = Robot.rearRight.getEncPosition(); 
+    	int fl = Robot.frontLeft.getSelectedSensorPosition(Robot.talonClosedLoop) * -1; 
+    	int fr = Robot.frontRight.getSelectedSensorPosition(Robot.talonClosedLoop); 
+    	//int rl = Robot.rearLeft.getSelectedSensorPosition(Robot.talonClosedLoop) * -1;
+    	int rr = Robot.rearRight.getSelectedSensorPosition(Robot.talonClosedLoop); 
     	int avg = (fl + fr + rr) / 3;
     	return avg;
     	
